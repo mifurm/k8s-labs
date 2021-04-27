@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: my-super-app
+  name: my-super-service-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-super-app
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: my-super-app
+    spec:
+      containers:
+      - image: przemekmalak/hello:simple
+        name: hello
+        resources: {}

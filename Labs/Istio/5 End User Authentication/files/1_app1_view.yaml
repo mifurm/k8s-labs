@@ -1,0 +1,13 @@
+apiVersion: "security.istio.io/v1beta1"
+kind: "AuthorizationPolicy"
+metadata:
+  name: "app-viewer"
+  namespace: srv
+spec:
+  selector:
+    matchLabels:
+      app: app1
+  rules:
+  - to:
+    - operation:
+        methods: ["GET"]

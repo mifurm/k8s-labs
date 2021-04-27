@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-1-0
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app
+      version: "1.0"
+  template:
+    metadata:
+      labels:
+        app: app
+        version: "1.0"
+    spec:
+      containers:
+      - name: app
+        image: cloudstateu/simpleflask:1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+          name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  labels:
+    app: app
+spec:
+  ports:
+  - port: 5000
+    targetPort: 5000
+    name: http
+  selector:
+    app: app

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-volume
+spec:
+  containers:
+  - image: alpine
+    name: env
+    volumeMounts:
+    - name: config
+      mountPath: /etc/myconf
+      readOnly: true
+    command:  [ "/bin/sh", "-c", "ls /etc/myconf && sleep 3600" ]
+  volumes:
+  - name: config
+    configMap:
+      name: configmap-file

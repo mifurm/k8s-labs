@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: web
+  name: pods-reader
+rules:
+- apiGroups: [""]
+  verbs: ["get", "list"]
+  resources: ["pods"]
+--- 
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pods-reader-rolebinding
+  namespace: web
+subjects:
+- kind: User
+  name: web-user
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: pods-reader
+  apiGroup: rbac.authorization.k8s.io

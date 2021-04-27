@@ -1,0 +1,30 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: basic-cluster-spot
+  region: eu-west-1
+  version: "1.16"
+vpc:
+  nat:
+    gateway: Disable 
+nodeGroups:
+  - name: ng-spots-1
+    minSize: 2
+    maxSize: 2
+    instancesDistribution:
+      maxPrice: 1
+      instanceTypes: ["c5.large", "t3.medium"] 
+      onDemandBaseCapacity: 0
+      onDemandPercentageAboveBaseCapacity: 0
+      spotInstancePools: 2
+  - name: ng-spots-2
+    minSize: 2
+    maxSize: 2
+    instancesDistribution:
+      maxPrice: 1
+      instanceTypes: ["c5.large", "t3.medium"] 
+      onDemandBaseCapacity: 0
+      onDemandPercentageAboveBaseCapacity: 0
+      spotInstancePools: 2
+

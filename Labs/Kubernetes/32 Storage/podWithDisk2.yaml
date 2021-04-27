@@ -1,0 +1,27 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mybackend
+  labels:
+    app: storage-demo
+spec:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - storage-demo
+        topologyKey: "kubernetes.io/hostname"
+  containers:
+    - name: mybackend
+      image: nginx
+      volumeMounts:
+      - mountPath: "/mnt/azure"
+        name: volume
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+        claimName: azure-managed-disk-mifurm

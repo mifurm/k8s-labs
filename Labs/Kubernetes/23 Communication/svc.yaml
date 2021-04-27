@@ -1,0 +1,56 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: hello
+spec:
+  selector:
+    app: hello
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: 5000
+    protocol: TCP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-1
+  labels:
+    app: hello
+spec:
+  containers:
+  - name: helloapp
+    image: przemekmalak/hello
+    ports:
+    - containerPort: 5000
+      name: http
+      protocol: TCP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-2
+  labels:
+    app: hello
+spec:
+  containers:
+  - name: helloapp
+    image: przemekmalak/hello
+    ports:
+    - containerPort: 5000
+      name: http
+      protocol: TCP
+--- 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nettools
+  labels:
+    app: nettools
+spec:
+  containers:
+  - name: tools
+    image: giantswarm/tiny-tools
+    command: ["/bin/sh"]
+    args: ["-c", "sleep 3600"]

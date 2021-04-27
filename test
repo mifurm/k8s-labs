@@ -1,0 +1,4 @@
+for i in {1..100} 
+do
+    curl https://sandbox.przelewy24.pl/api/v1/testAccess -v 
+done;

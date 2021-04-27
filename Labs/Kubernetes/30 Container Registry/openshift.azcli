@@ -1,0 +1,65 @@
+{
+  "apiserverProfile": {
+    "ip": "20.50.21.1",
+    "url": "https://api.s902y3wz.westeurope.aroapp.io:6443/",
+    "visibility": "Public"
+  },
+  "clusterProfile": {
+    "domain": "s902y3wz",
+    "pullSecret": null,
+    "resourceGroupId": "/subscriptions/c3f53507-8081-4ebe-8d1b-40e4816b6162/resourceGroups/aro-s902y3wz",
+    "version": "4.3.18"
+  },
+  "consoleProfile": {
+    "url": "https://console-openshift-console.apps.s902y3wz.westeurope.aroapp.io/"
+  },
+  "id": "/subscriptions/c3f53507-8081-4ebe-8d1b-40e4816b6162/resourceGroups/arorg/providers/Microsoft.RedHatOpenShift/openShiftClusters/cluster",
+  "ingressProfiles": [
+    {
+      "ip": "52.143.26.253",
+      "name": "default",
+      "visibility": "Public"
+    }
+  ],
+  "location": "westeurope",
+  "masterProfile": {
+    "subnetId": "/subscriptions/c3f53507-8081-4ebe-8d1b-40e4816b6162/resourceGroups/arorg/providers/Microsoft.Network/virtualNetworks/aro-vnet/subnets/master-subnet",
+    "vmSize": "Standard_D8s_v3"
+  },
+  "name": "cluster",
+  "networkProfile": {
+    "podCidr": "10.128.0.0/14",
+    "serviceCidr": "172.30.0.0/16"
+  },
+  "provisioningState": "Succeeded",
+  "resourceGroup": "arorg",
+  "servicePrincipalProfile": {
+    "clientId": "fcd534b1-f206-47ff-a3a7-7b62f42fdee6",
+    "clientSecret": null
+  },
+  "tags": null,
+  "type": "Microsoft.RedHatOpenShift/openShiftClusters",
+  "workerProfiles": [
+    {
+      "count": 1,
+      "diskSizeGb": 128,
+      "name": "cluster-j6mjk-worker-westeurope1",
+      "subnetId": "/subscriptions/c3f53507-8081-4ebe-8d1b-40e4816b6162/resourceGroups/arorg/providers/Microsoft.Network/virtualNetworks/aro-vnet/subnets/worker-subnet",
+      "vmSize": "Standard_D4s_v3"
+    },
+    {
+      "count": 1,
+      "diskSizeGb": 128,
+      "name": "cluster-j6mjk-worker-westeurope2",
+      "subnetId": "/subscriptions/c3f53507-8081-4ebe-8d1b-40e4816b6162/resourceGroups/arorg/providers/Microsoft.Network/virtualNetworks/aro-vnet/subnets/worker-subnet",
+      "vmSize": "Standard_D4s_v3"
+    },
+    {
+      "count": 1,
+      "diskSizeGb": 128,
+      "name": "cluster-j6mjk-worker-westeurope3",
+      "subnetId": "/subscriptions/c3f53507-8081-4ebe-8d1b-40e4816b6162/resourceGroups/arorg/providers/Microsoft.Network/virtualNetworks/aro-vnet/subnets/worker-subnet",
+      "vmSize": "Standard_D4s_v3"
+    }
+  ]
+}

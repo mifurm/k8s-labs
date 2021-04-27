@@ -1,0 +1,16 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: basic-cluster
+  region: eu-west-1
+
+nodeGroups:
+  - name: ng-1-1-16
+    instanceType: t2.medium
+    minSize: 1
+    maxSize: 7
+    desiredCapacity: 1
+    iam:
+      withAddonPolicies:
+        autoScaler: true

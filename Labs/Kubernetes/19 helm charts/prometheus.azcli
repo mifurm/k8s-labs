@@ -1,0 +1,35 @@
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+
+helm install prometheus stable/prometheus --version 9.0.0
+
+####
+The Prometheus server can be accessed via port 80 on the following DNS name from within your cluster:
+prometheus-server.default.svc.cluster.local
+
+Get the Prometheus server URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace default port-forward $POD_NAME 9090
+
+Get the Alertmanager URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=alertmanager" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace default port-forward $POD_NAME 9093
+
+Get the PushGateway URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=pushgateway" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace default port-forward $POD_NAME 9091
+####
+
+#forward traffic to server URL
+export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace default port-forward $POD_NAME 9090
+
+helm install grafana stable/grafana
+
+#get the grafana password to login
+kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
+#forward the port to grafana
+export POD_NAME=$(kubectl get pods --namespace default -l "app=grafana,release=grafana" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace default port-forward grafana-647c477666-vcw6n 3000
+
+helm install -f config-maria.yaml stable/mariadb --generate-name

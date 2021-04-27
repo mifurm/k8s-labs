@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello
+  labels:
+    app: hello
+spec:
+  containers:
+  - name: hello
+    image: przemekmalak/hello
+    ports:
+    - containerPort: 5000
+      name: http
+      protocol: TCP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nettools
+  labels:
+    app: nettools
+spec:
+  containers:
+  - name: tools
+    image: giantswarm/tiny-tools
+    command: ["/bin/sh"]
+    args: ["-c", "sleep 3600"]

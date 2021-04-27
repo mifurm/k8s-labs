@@ -1,0 +1,36 @@
+git clone --single-branch --branch master https://github.com/rook/rook.git
+
+#cd rook/cluster/examples/kubernetes/ceph
+#kubectl create -f common.yaml
+#kubectl create -f operator.yaml
+#kubectl create -f cluster.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/Azure/kubernetes-keyvault-flexvol/master/deployment/kv-flexvol-installer.yaml
+
+cd cluster/examples/kubernetes/ceph
+kubectl create -f common.yaml
+kubectl create -f operator.yaml
+kubectl create -f cluster-on-pvc.yaml
+
+kubectl delete -f cluster-on-pvc.yaml
+kubectl delete -f operator.yaml
+kubectl delete -f common.yaml
+
+helm repo add rook-master http://charts.rook.io/master
+helm repo add rook-release http://charts.rook.io/release
+kubectl create ns rook-ceph
+
+helm install rook --namespace rook-ceph rook-release/rook-ceph --set agent.flexVolumeDirPath="/etc/kubernetes/volumeplugins"
+kubectl get pods
+
+kubectl get pvc -n rook-ceph
+
+kubectl apply -f kube-blokpool.yaml
+
+kubectl create ns databases
+helm uninstall mysql --namespace databases 
+helm install mysql stable/mysql --namespace databases --set persistence.storageClass=rook-ceph-block,persistence.size=4Gi
+
+kubectl create -f rook-toolbox.yaml
+kubectl -n rook-ceph exec -it $(kubectl -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') bash
+#ceph status

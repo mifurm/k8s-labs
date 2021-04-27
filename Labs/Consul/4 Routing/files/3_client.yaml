@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: client
+  annotations:
+    "consul.hashicorp.com/connect-inject": "true"
+    "consul.hashicorp.com/connect-service-upstreams": "application:5000"
+  name: client
+spec:
+  containers:
+  - image: przemekmalak/tools
+    name: client
+    args:
+    - sh
+    - -c
+    - sleep 3600

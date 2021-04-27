@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntutest
+  labels:
+    app: ubuntutest
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ubuntutest
+  template:
+    metadata:
+      labels:
+        app: ubuntutest
+    spec:
+      containers:
+      - name: ubuntutest
+        image: mifurm/ubuntunet
+        command: ['bash', '-c', 'curl https://sandbox.przelewy24.pl/api/v1/testAccess -v && sleep 3600']
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ubuntutest
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: ubuntutest

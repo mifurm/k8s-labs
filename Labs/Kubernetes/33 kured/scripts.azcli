@@ -1,0 +1,40 @@
+# Add the stable Helm repository
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+
+# Update your local Helm chart repository cache
+helm repo update
+
+# Create a dedicated namespace where you would like to deploy kured into
+kubectl create namespace kured
+
+# Install kured in that namespace with Helm 3 (only on Linux nodes, kured is not working on Windows nodes)
+helm install kured stable/kured --namespace kured --set nodeSelector."beta\.kubernetes\.io/os"=linux
+
+# Setup ssh session on nodes in Azure
+rg=k8slab02-vn
+clusterName=k8slab02vn
+
+CLUSTER_RESOURCE_GROUP=$(az aks show --resource-group $rg --name $clusterName --query nodeResourceGroup -o tsv)
+SCALE_SET_NAME=$(az vmss list --resource-group $CLUSTER_RESOURCE_GROUP --query [0].name -o tsv)
+
+SCALE_SET_NAME=aks-agentpool-32781567-vmss
+
+az vmss extension set  \
+    --resource-group $CLUSTER_RESOURCE_GROUP \
+    --vmss-name $SCALE_SET_NAME \
+    --name VMAccessForLinux \
+    --publisher Microsoft.OSTCExtensions \
+    --version 1.4 \
+    --protected-settings "{\"username\":\"azureuser\", \"ssh_key\":\"$(cat ~/.ssh/id_rsa.pub)\"}"
+
+az vmss update-instances --instance-ids '*' \
+    --resource-group $CLUSTER_RESOURCE_GROUP \
+    --name $SCALE_SET_NAME
+
+#start a container 
+kubectl run --generator=run-pod/v1 -it --rm aks-ssh --image=debian
+#and patch all the data
+apt-get update && apt-get install openssh-client -y
+
+#from the other window, copy the ssh certificated
+kubectl cp ~/.ssh/id_rsa $(kubectl get pod -l run=aks-ssh -o jsonpath='{.items[0].metadata.name}'):/id_rsa

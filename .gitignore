@@ -1,0 +1,9 @@
+/Robocze/k8s.pptx
+Robocze/*
+/Labs/Consul/1 Installation/consul-helm
+/Labs/Kubernetes/26 Vault/files/init
+.vscode
+/Labs/Kubernetes/1 Creating pod/my_pod_definition.yaml
+*.crt
+*.pem
+.DS_Store

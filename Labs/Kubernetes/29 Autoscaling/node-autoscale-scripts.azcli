@@ -1,0 +1,40 @@
+#Before You start, please install some preview features
+az extension add --name aks-preview
+az extension update --name aks-preview
+
+#check if the clusters you have in your subscription are autoscale enabled
+az aks list | grep enableAutoScaling
+
+#create the cluster like this
+https://docs.microsoft.com/en-us/azure/aks/cluster-autoscaler
+
+#if not, enable autoscaling
+
+az aks update --resource-group k8slab02-vn --name k8slab02vn --update-cluster-autoscaler --min-count 1 --max-count 10 --cluster-autoscaler-profile scan-interval=10s
+az aks update --resource-group k8slab02-vn --name k8slab02vn --update-cluster-autoscaler --min-count 1 --max-count 10 --cluster-autoscaler-profile scale-down-utilization-threshold=0.2
+
+
+#after sucessful update you will get something like this in the json profile
+"autoScalerProfile": {
+    "balance-similar-node-groups": "false",
+    "maxGracefulTerminationSec": "600",
+    "scaleDownDelayAfterAdd": "10m",
+    "scaleDownDelayAfterDelete": "10s",
+    "scaleDownDelayAfterFailure": "3m",
+    "scaleDownUnneededTime": "10m",
+    "scaleDownUnreadyTime": "20m",
+    "scaleDownUtilizationThreshold": "0.5",
+    "scanInterval": "30s"
+  },
+
+#so now you can try scaling to see what will happen
+
+#you can check the events by checking this
+kubectl get events --all-namespaces
+
+#let's check what is the status of autoscaler in k8s
+kubectl get configmap -n kube-system cluster-autoscaler-status -o yaml
+
+#set an autoscaler profile more specific
+https://docs.microsoft.com/en-us/azure/aks/cluster-autoscaler#using-the-autoscaler-profile
+

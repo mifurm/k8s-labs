@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: srv-sa
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: srv
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: srv
+  template:
+    metadata:
+      labels:
+        app: srv
+        task: consul
+      annotations:
+        "consul.hashicorp.com/connect-inject": "true"
+    spec:
+      serviceAccountName: srv-sa
+      containers:
+      - name: srv1
+        image: przemekmalak/srv1:8
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+          name: http
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nettools
+  labels:
+    app: nettools
+    task: consul
+  annotations:
+    "consul.hashicorp.com/connect-inject": "true"
+    "consul.hashicorp.com/connect-service-upstreams": "srv1:5000"
+spec:
+  containers:
+  - name: tools
+    image: giantswarm/tiny-tools
+    command: ["/bin/sh"]
+    args: ["-c", "sleep 3600"]

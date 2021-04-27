@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pod-efs
+  name: pod-efs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pod-efs
+  template:
+    metadata:
+      labels:
+        app: pod-efs
+    spec:
+      volumes:
+      - name: vol1
+        persistentVolumeClaim:
+          claimName: efs-claim
+      containers:
+      - image: przemekmalak/tools
+        command: ["sh", "-c", "sleep infinity"]
+        name: tools
+        volumeMounts:
+        - name: vol1
+          mountPath: /volume
+

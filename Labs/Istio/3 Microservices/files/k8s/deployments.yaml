@@ -1,0 +1,230 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app1-cm
+  namespace: srv
+data:
+  service1: srv1.srv.svc.cluster.local
+  service2: srv2.srv.svc.cluster.local
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app1-sa
+  namespace: srv
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: srv1-sa
+  namespace: srv
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: srv2-sa
+  namespace: srv
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1
+  namespace: srv
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app1
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      serviceAccountName: app1-sa
+      containers:
+      - name: app1
+        image: przemekmalak/app1:12
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+          name: http
+        env:
+          - name: service1
+            valueFrom:
+              configMapKeyRef:
+                name: app1-cm
+                key: service1
+          - name: service2
+            valueFrom:
+              configMapKeyRef:
+                name: app1-cm
+                key: service2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app1
+  namespace: srv
+  labels:
+    app: app1
+spec:
+  ports:
+  - port: 5000
+    targetPort: 5000
+    name: http
+  selector:
+    app: app1
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: srv1
+  namespace: srv
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: srv1
+  template:
+    metadata:
+      labels:
+        app: srv1
+    spec:
+      serviceAccountName: srv1-sa
+      containers:
+      - name: srv1
+        image: przemekmalak/srv1:8
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+          name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: srv1
+  namespace: srv
+  labels:
+    app: srv1
+spec:
+  ports:
+  - port: 5000
+    targetPort: 5000
+    name: http
+  selector:
+    app: srv1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: srv2
+  namespace: srv
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: srv2
+  template:
+    metadata:
+      labels:
+        app: srv2
+    spec:
+      serviceAccountName: srv2-sa
+      containers:
+      - name: srv2
+        image: przemekmalak/srv2:9
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+          name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: srv2
+  namespace: srv
+  labels:
+    app: srv2
+spec:
+  ports:
+  - port: 5000
+    targetPort: 5000
+    name: http
+  selector:
+    app: srv2
+--- 
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: app1
+  namespace: srv
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - app-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /app1
+    route:
+    - destination:
+        host: app1.srv.svc.cluster.local
+        port:
+          number: 5000
+--- 
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: srv1
+  namespace: srv
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - app-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /srv1
+    route:
+    - destination:
+        host: srv1.srv.svc.cluster.local
+        port:
+          number: 5000
+--- 
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: srv2
+  namespace: srv
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - app-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /srv2
+    route:
+    - destination:
+        host: srv2.srv.svc.cluster.local
+        port:
+          number: 5000
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: app-gateway
+  namespace: srv
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"

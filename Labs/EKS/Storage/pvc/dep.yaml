@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: pod
+  name: pod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pod
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: pod
+    spec:
+      volumes:
+      - name: vol1
+        persistentVolumeClaim:
+          claimName: claim
+      containers:
+      - image: przemekmalak/tools
+        command: ["sh", "-c", "sleep infinity"]
+        name: tools
+        volumeMounts:
+        - name: vol1
+          mountPath: /volume
+        resources: {}
+status: {}

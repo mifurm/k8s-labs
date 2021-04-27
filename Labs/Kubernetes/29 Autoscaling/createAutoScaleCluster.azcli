@@ -1,0 +1,17 @@
+# First create a resource group
+az group create --name k8s1182 --location eastus
+
+# Now create the AKS cluster and enable the cluster autoscaler
+az aks create \
+  --resource-group student8 \
+  --name stk8s8 \
+  --kubernetes-version 1.18.2 \
+  --node-count 1 \
+  --vm-set-type VirtualMachineScaleSets \
+  --load-balancer-sku standard \
+  --enable-cluster-autoscaler \
+  --min-count 1 \
+  --max-count 3 \
+  --network-plugin kubenet \
+  --network-policy calico \
+  --node-resource-group stk8s8_nodes

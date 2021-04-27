@@ -1,0 +1,51 @@
+#check what storageclasses we have
+kubectl get storageclass
+
+#create Persistant Volume Claim
+kubectl apply -f pvc.yaml 
+
+#check PVC
+kubectl get pvc #check the if of the pvc with disk
+
+#check disks in the subscription
+az disk list -o table
+
+#set pod with disk assigned
+kubectl apply -f podWithDisk.yaml
+kubectl apply -f podWithDisk2.yaml
+
+kubectl get pods
+kubectl describe pod/nginx
+
+#check if the mount data exsists in volume
+kubectl exec -it mybackend bash
+kubectl exec -it myfrontend bash
+
+#create a simple file on the volume to what is happening
+touch file
+
+#check the pv
+kubectl get pv
+kubectl describe pv/<define the name of the pv>
+
+#shutdown the vm with attached disk
+
+#create another pvc
+kubectl apply -f pvc-azfiles.yaml
+kubectl apply -f podWithDisk3.yaml
+
+kubectl exec -it mypod bash
+
+#write some files to file share and let's restart the node
+
+#delete pods
+kubectl get pods
+kubectl delete pods/mybackend
+kubectl delete pods/myfrontend
+
+#create the pod again, connect to pod and check if the volume exists
+
+
+
+aks-agentpool-327815aks-agentpool-3278156OS__1_0d6933f683f747fdb4c4acbd1034b688
+aks-agentpool-327815aks-agentpool-3278156OS__1_2d04dcba3a50494ab0ef719b881035b8

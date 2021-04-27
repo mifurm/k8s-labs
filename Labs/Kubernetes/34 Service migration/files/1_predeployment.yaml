@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external-service
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: external_service
+  name: external-service
+  namespace: external-service
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  type: LoadBalancer
+  selector:
+    app: external_service
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: external_service
+  name: external-service
+  namespace: external-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: external_service
+  template:
+    metadata:
+      labels:
+        app: external_service
+    spec:
+      containers:
+      - image: przemekmalak/hello:simple
+        name: hello
+        resources: {}
+        readinessProbe:
+            httpGet:
+              path: /
+              port: 8080

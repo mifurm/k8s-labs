@@ -1,0 +1,22 @@
+#register Container Instances (ACI)
+az provider register --namespace Microsoft.ContainerInstance
+
+#check if the provider is registered
+az provider list --query "[?contains(namespace,'Microsoft.ContainerInstance')]" -o table
+
+#deploy the pod with ACI taint
+kubectl apply -f virtual-node.yaml
+
+#run simple pod with debin to do the tests
+kubectl run -it --rm virtual-node-test --image=debian
+
+#all below run inside virtual-node-test pod
+apt-get update && apt-get install -y curl
+curl -L http://10.241.0.4
+
+#check the status and scale
+kubectl get configmap -n kube-system cluster-autoscaler-status -o yaml
+kubectl scale --replicas=20 deploy/aci-helloworld
+
+#https://github.com/virtual-kubelet/virtual-kubelet
+

@@ -1,0 +1,24 @@
+#Deploy pod to cluster
+kubectl apply -f https://k8s.io/examples/application/php-apache.yaml
+#kubectl delete -f https://k8s.io/examples/application/php-apache.yaml
+
+#Set the autoscale for pod 
+kubectl autoscale deployment php-apache --cpu-percent=20 --min=1 --max=20
+
+#Check the HPA status
+kubectl get hpa
+
+#Run a simple busybox pod to generate some load
+kubectl run -it --rm load-generator --image=busybox -- /bin/sh
+
+#Run the line below inside the pod
+while true; do wget -q -O- http://php-apache.default.svc.cluster.local; done
+
+#Run another generator
+kubectl run -it --rm load-generator2 --image=busybox -- /bin/sh
+
+#Run this line inside pod
+while true; do wget -q -O- http://php-apache.default.svc.cluster.local; done
+
+#k8s autoscaler solution
+https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/azure/README.md

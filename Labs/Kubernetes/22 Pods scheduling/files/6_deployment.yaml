@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis-cache
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: redis-cache
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - redis-cache
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: redis-cache
+        image: redis:3.2-alpine

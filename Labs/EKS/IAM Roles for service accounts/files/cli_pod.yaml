@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: aws-cli
+  name: aws-cli
+spec:
+  containers:
+  - args:
+    - sh
+    - -c
+    - "aws --version && sleep infinity"
+    image: przemekmalak/aws-cli
+    name: test
+  serviceAccountName: sa-s3
+  restartPolicy: Never
+status: {}

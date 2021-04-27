@@ -1,0 +1,29 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: versions-app1
+spec:
+  selector:
+    matchLabels:
+      app: versions-app
+      ver: v1
+  replicas: 10
+  template:
+    metadata:
+      labels:
+        app: versions-app
+        ver: v1
+      annotations:
+        linkerd.io/inject: enabled
+    spec:
+      containers:
+      - name: application
+        image: cloudstateu/versions-app:1
+        ports:
+        - containerPort: 5000
+        imagePullPolicy: Always
+      tolerations:
+        - key: color
+          operator: Exists
+          effect: NoSchedule

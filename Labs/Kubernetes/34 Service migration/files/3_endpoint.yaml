@@ -1,0 +1,9 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+ name: my-super-service
+subsets:
+ - addresses:
+     - ip: 52.143.15.37
+   ports:
+     - port: 80

@@ -1,0 +1,17 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::655379451354:oidc-provider/oidc.eks.eu-west-1.amazonaws.com/id/613A036EBC2388FC711F14E764255FEE"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "oidc.eks.eu-west-1.amazonaws.com/id/613A036EBC2388FC711F14E764255FEE:sub": "system:serviceaccount:namespace:sa-s3"
+        }
+      }
+    }
+  ]
+}

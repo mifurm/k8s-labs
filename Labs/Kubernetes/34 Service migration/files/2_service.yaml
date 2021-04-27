@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+ name: my-super-service
+spec:
+  selector:
+    app: my-super-app
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8080

@@ -1,0 +1,7 @@
+kind: Service
+apiVersion: v1
+metadata:
+ name: my-super-service
+spec:
+ type: ExternalName
+ externalName: https://oygwdqyb7b.execute-api.eu-west-1.amazonaws.com/Prod/hello/

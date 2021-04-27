@@ -1,0 +1,21 @@
+apiVersion: "security.istio.io/v1beta1"
+kind: "AuthorizationPolicy"
+metadata:
+  name: "srv1-viewer"
+  namespace: srv
+spec:
+  selector:
+    matchLabels:
+      app: srv1
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/srv/sa/app1-sa"]
+        #ipBlocks: ["10.244.11.22/32", "10.244.10.36/32"]
+    to:
+    - operation:
+        methods: ["GET"]
+
+
+
+
